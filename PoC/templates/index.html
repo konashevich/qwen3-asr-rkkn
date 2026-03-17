@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Qwen3-ASR CM3588 PoC</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Local Speech Recognition PoC</p>
+        <h1>Qwen3-ASR on CM3588</h1>
+        <p class="lede">
+          This board can run the full Qwen3-ASR Python stack today. The native RKNN path is still diagnostic only, so this PoC is built around the verified board-side transcription runtime.
+        </p>
+      </section>
+
+      <section class="panel panel-grid">
+        <article>
+          <h2>Board</h2>
+          <dl>
+            <div><dt>Model</dt><dd>{{ diagnostics.board_model or 'Unknown' }}</dd></div>
+            <div><dt>Platform</dt><dd>{{ diagnostics.platform.system }} {{ diagnostics.platform.release }} / {{ diagnostics.platform.machine }}</dd></div>
+            <div><dt>Compatible</dt><dd>{{ diagnostics.compatible | join(', ') }}</dd></div>
+          </dl>
+        </article>
+        <article>
+          <h2>ASR Runtime</h2>
+          <dl>
+            <div><dt>Model ID</dt><dd>{{ diagnostics.runtime.model_id }}</dd></div>
+            <div><dt>Loaded</dt><dd id="runtime-loaded">{{ 'yes' if diagnostics.runtime.loaded else 'no' }}</dd></div>
+            <div><dt>HF Cache</dt><dd id="runtime-cache-home">{{ diagnostics.runtime.cache_home }}</dd></div>
+            <div><dt>Allowed Uploads</dt><dd>{{ allowed_extensions }}</dd></div>
+          </dl>
+        </article>
+        <article>
+          <h2>NPU Status</h2>
+          <dl>
+            <div><dt>`rknpu` module</dt><dd>{{ 'loaded' if diagnostics.npu.rknpu_module_loaded else 'not detected' }}</dd></div>
+            <div><dt>`librknnrt.so`</dt><dd>{{ 'present' if diagnostics.npu.librknnrt_present else 'missing' }}</dd></div>
+            <div><dt>`rknnlite` env</dt><dd>{{ 'present' if diagnostics.npu.rknnlite_site_present else 'missing' }}</dd></div>
+            <div><dt>RKNN board result</dt><dd>{{ diagnostics.npu.board_validation_report.status if diagnostics.npu.board_validation_report else 'not run' }}</dd></div>
+          </dl>
+        </article>
+        <article>
+          <h2>Storage</h2>
+          <dl>
+            <div><dt>Cache volume</dt><dd>{{ diagnostics.storage.path }}</dd></div>
+            <div><dt>Free</dt><dd>{{ diagnostics.storage.free_gib }} GiB</dd></div>
+            <div><dt>Used</dt><dd>{{ diagnostics.storage.used_gib }} GiB</dd></div>
+            <div><dt>Total</dt><dd>{{ diagnostics.storage.total_gib }} GiB</dd></div>
+          </dl>
+        </article>
+      </section>
+
+      <section class="panel composer">
+        <div class="composer-head">
+          <div>
+            <h2>Transcribe Audio</h2>
+            <p>Upload a clip or record from the browser. The first request may take a few minutes if the model is still loading.</p>
+          </div>
+          <div class="badge-row">
+            <span class="badge">Qwen/Qwen3-ASR-0.6B</span>
+            <span class="badge">Board-local</span>
+            <span class="badge badge-warning">NPU path partial</span>
+          </div>
+        </div>
+
+        <form id="transcribe-form" class="form-grid">
+          <label class="field field-file">
+            <span>Audio file</span>
+            <input id="audio-input" name="audio" type="file" accept="audio/*,.webm,.m4a,.mp4">
+          </label>
+
+          <label class="field">
+            <span>Language hint</span>
+            <input id="language-input" name="language" type="text" placeholder="Optional, e.g. English or Chinese">
+          </label>
+
+          <label class="field field-wide">
+            <span>Context prompt</span>
+            <textarea id="context-input" name="context" rows="3" placeholder="Optional prompt or decoding context"></textarea>
+          </label>
+
+          <label class="toggle">
+            <input id="timestamps-input" name="return_time_stamps" type="checkbox" value="true">
+            <span>Return timestamps when available</span>
+          </label>
+
+          <div class="recorder">
+            <div>
+              <h3>Browser Microphone</h3>
+              <p id="recording-status">Idle. If you record, the captured clip will be used when no file is selected.</p>
+            </div>
+            <div class="recorder-actions">
+              <button id="record-start" type="button">Start Recording</button>
+              <button id="record-stop" type="button" disabled>Stop</button>
+              <button id="record-clear" type="button" disabled>Clear</button>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="submit-button" type="submit">Run Transcription</button>
+            <p id="submit-status">No request running.</p>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel results">
+        <div class="results-head">
+          <h2>Result</h2>
+          <p>JSON and parsed transcript appear here after each request.</p>
+        </div>
+        <div id="result-empty" class="empty-state">No transcription yet.</div>
+        <div id="result-card" class="result-card hidden">
+          <div class="result-meta">
+            <span id="result-language" class="badge"></span>
+            <span id="result-elapsed" class="badge"></span>
+            <span id="result-count" class="badge"></span>
+          </div>
+          <pre id="result-text" class="transcript"></pre>
+          <details>
+            <summary>Raw JSON</summary>
+            <pre id="result-json" class="json"></pre>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      window.__INITIAL_STATUS__ = {{ diagnostics | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+  </html>

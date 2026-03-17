@@ -1,4 +1,4 @@
- moving without audio, I can build export_encoder_to_onnx.py around the thinker.audio_tower path identified in Phase 2.# Qwen3-ASR to Rockchip Conversion Handoff Specification
+# Qwen3-ASR to Rockchip Conversion Handoff Specification
 
 ## Purpose
 
@@ -20,6 +20,23 @@ The most important conclusion from prior research is this:
 4. Public searches for `Qwen3-ASR Rockchip`, `Qwen3-ASR rknn`, and `Qwen3-ASR onnx` did not reveal a working public Rockchip port.
 5. Unofficial local deployment work exists for GGUF and llama.cpp style reduced runtimes, but that is not the same as a native Rockchip conversion.
 6. The correct conversion host is Linux x86_64. Do not use ARM64 as the conversion machine. Windows x86_64 is possible for some tooling, but Linux x86_64 is the preferred and practical platform.
+7. On the CM3588 board itself, the official `qwen-asr` runtime now runs `Qwen/Qwen3-ASR-0.6B` successfully when the Hugging Face cache is redirected to SSD-backed storage.
+8. The existing reduced encoder `.rknn` artifact still fails to initialize on that board with `RKNN_ERR_MODEL_INVALID` and `invalid RKNN_MAGIC`, so native on-board RKNN execution is not yet a validated deployment path.
+
+## Current Device Reality
+
+The current machine is a FriendlyElec CM3588 based on RK3588 running Linux aarch64.
+
+What is currently operational on the device:
+
+- Full transcription through the official Python `qwen-asr` stack
+- Browser-accessible local transcription PoC in `PoC/`
+- Board-side Rockchip runtime infrastructure under `/home/pi/npu_env` with `rknn_toolkit_lite2`
+
+What is still not operational on the device:
+
+- Native end-to-end RKNN deployment of Qwen3-ASR
+- Successful initialization of the current reduced encoder `.rknn` artifact on the board
 
 ## Required Host Platform
 

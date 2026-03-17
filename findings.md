@@ -2,11 +2,16 @@
 
 ## Phase 1 Baseline
 
-- Status: not run yet
-- Model:
-- Environment:
+- Status: completed on CM3588 for single-sample board validation
+- Model: `Qwen/Qwen3-ASR-0.6B`
+- Environment: workspace `.venv` on Linux aarch64 CM3588, with Hugging Face cache redirected to `/mnt/merged_ssd/qwen3-asr-model-cache/huggingface`
 - Sample set:
+  - `/mnt/merged_ssd/app_data/openclaw_data/workspace/aoede_test.wav`
 - Notes:
+  - Full `qwen-asr` inference runs on the board and produced a correct English transcript.
+  - First model load took `159.01s` including initial weight download.
+  - The sample transcription took `92.55s` after model load.
+  - Output was written under `outputs/poc_smoke/`.
 
 ## Phase 2 Model Inspection
 
@@ -47,7 +52,22 @@
   - RK3588 simulator output matched ONNX with `max_abs_diff_vs_onnx=0.0003182440996170044` and `mean_abs_diff_vs_onnx=3.526877480908297e-05`.
   - `outputs/rknn/qwen3_asr_encoder_single_chunk_rk3576.rknn` built successfully and ran in the RKNN PC simulator.
   - RK3576 simulator output matched ONNX with `max_abs_diff_vs_onnx=0.00043520331382751465` and `mean_abs_diff_vs_onnx=4.207476376905106e-05`.
+  - Board-side runtime on CM3588 is not yet validated: `validate_converted.py` under `/home/pi/npu_env` failed during `RKNNLite.init_runtime` with `RKNN_ERR_MODEL_INVALID`, and the runtime logged `parseRKNN: invalid RKNN_MAGIC!`.
   - This is only the reduced speech encoder core, not an end-to-end Qwen3-ASR deployment.
+
+## Phase 7 Board PoC
+
+- Status: completed for a local Flask-based transcription PoC
+- Evidence:
+  - `PoC/app.py`
+  - `PoC/templates/index.html`
+  - `PoC/static/app.js`
+  - `PoC/static/style.css`
+  - `PoC/run_poc.sh`
+- Notes:
+  - The PoC runs on the CM3588 board using the official `qwen-asr` package and `Qwen/Qwen3-ASR-0.6B`.
+  - Browser upload and browser microphone recording are supported.
+  - SSD-backed model cache is the default to avoid exhausting the root filesystem.
 
 ## Phase 6 RKLLM Feasibility
 
