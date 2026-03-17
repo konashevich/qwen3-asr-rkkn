@@ -1,0 +1,13 @@
+{
+  "input_features_shape": [
+    128,
+    100
+  ],
+  "feature_lens": [
+    100
+  ],
+  "reference_output_shape": [
+    13,
+    1024
+  ]
+}

@@ -1,0 +1,16 @@
+.venv/
+.venv-qwen3-asr/
+.venv-rknn/
+__pycache__/
+*.pyc
+
+# Ignore only the runtime venv created on the Rockchip device, not the packaged model bundle.
+dist/rk3588_encoder_runtime/.venv-rk3588-runtime/
+
+# Ignore local validation scratch output; keep exported model artifacts and references tracked.
+outputs/device_run*/
+# Ignore large binaries (exceed GitHub limit)
+*.onnx
+*.rknn
+**/*.onnx
+**/*.rknn

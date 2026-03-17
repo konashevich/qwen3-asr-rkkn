@@ -1,0 +1,82 @@
+{
+  "status": "ok",
+  "model": "Qwen/Qwen3-ASR-0.6B",
+  "export_target": "thinker.audio_tower",
+  "export_mode": "single_chunk_audio_tower_core",
+  "onnx_path": "/home/beast/qwen3-asr-rkkn/outputs/encoder_onnx/qwen3_asr_encoder_single_chunk.onnx",
+  "sample_inputs": "/home/beast/qwen3-asr-rkkn/outputs/encoder_onnx/sample_inputs.npz",
+  "audio": {
+    "audio_source": null,
+    "audio_origin": "synthetic",
+    "sample_rate": 16000,
+    "duration_seconds": 1.0,
+    "synthetic_frequency": 440.0
+  },
+  "processor": {
+    "processor_class": "Qwen3ASRProcessor",
+    "feature_shape": [
+      128,
+      100
+    ],
+    "feature_lens": [
+      100
+    ],
+    "audio_token": "<|audio_pad|>"
+  },
+  "onnx": {
+    "ir_version": 8,
+    "opset_imports": [
+      {
+        "domain": "",
+        "version": 17
+      }
+    ],
+    "node_count": 847,
+    "operator_counts": {
+      "Add": 59,
+      "Cast": 36,
+      "Constant": 219,
+      "Conv": 3,
+      "Div": 22,
+      "Erf": 22,
+      "Gather": 1,
+      "Gemm": 110,
+      "LayerNormalization": 37,
+      "MatMul": 37,
+      "Mul": 62,
+      "Reshape": 73,
+      "Slice": 1,
+      "Softmax": 18,
+      "Transpose": 91,
+      "Unsqueeze": 56
+    }
+  },
+  "validation": {
+    "onnx_input_names": [
+      "input_features"
+    ],
+    "reference_shape": [
+      13,
+      1024
+    ],
+    "onnx_shape": [
+      13,
+      1024
+    ],
+    "max_abs_diff": 5.885958671569824e-07,
+    "mean_abs_diff": 7.435717463977198e-08
+  },
+  "error": {
+    "fallback_from": {
+      "type": "UnsupportedOperatorError",
+      "message": "Exporting the operator 'aten::pad_sequence' to ONNX opset version 17 is not supported",
+      "hint": "The current audio_tower forward path uses pad_sequence-based chunk padding, which is not exportable in this ONNX pass."
+    },
+    "message": "Full audio_tower export failed, but reduced single-chunk core export succeeded."
+  },
+  "notes": [
+    "Static-shape export only in this first version.",
+    "The exported entrypoint is the speech encoder only, not the full multimodal model.",
+    "Example inputs are derived from Qwen3-ASR's own processor to keep feature formatting aligned with the model."
+  ]
+}

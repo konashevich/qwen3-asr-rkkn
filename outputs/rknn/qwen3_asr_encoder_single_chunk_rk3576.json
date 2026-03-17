@@ -1,0 +1,27 @@
+{
+  "status": "ok",
+  "target_platform": "rk3576",
+  "onnx_model": "/home/beast/qwen3-asr-rkkn/outputs/encoder_onnx/qwen3_asr_encoder_single_chunk.onnx",
+  "sample_inputs": "/home/beast/qwen3-asr-rkkn/outputs/encoder_onnx/sample_inputs.npz",
+  "rknn_model": "/home/beast/qwen3-asr-rkkn/outputs/rknn/qwen3_asr_encoder_single_chunk_rk3576.rknn",
+  "do_quantization": false,
+  "dataset": null,
+  "onnx_input_names": [
+    "input_features"
+  ],
+  "simulator": {
+    "onnx_input_names": [
+      "input_features"
+    ],
+    "output_count": 1,
+    "output_shapes": [
+      [
+        13,
+        1024
+      ]
+    ],
+    "max_abs_diff_vs_onnx": 0.00043520331382751465,
+    "mean_abs_diff_vs_onnx": 4.207476376905106e-05
+  },
+  "error": null
+}

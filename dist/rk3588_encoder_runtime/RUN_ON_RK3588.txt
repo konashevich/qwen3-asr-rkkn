@@ -1,0 +1,10 @@
+1. Copy this folder to the RK3588 board.
+2. Put the correct Rockchip rknn-toolkit-lite2 wheel for your board OS in this folder.
+3. Create the runtime environment:
+  bash setup-rk3588-runtime.sh ./rknn_toolkit_lite2-*.whl
+4. Run:
+  ./.venv-rk3588-runtime/bin/python validate_converted.py \
+    --model qwen3_asr_encoder_single_chunk_rk3588.rknn \
+    --input-features input_features.npy \
+    --reference-output encoder_reference_output.npy
+5. Inspect validation_report.json and device_output.npy.

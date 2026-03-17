@@ -1,4 +1,4 @@
-# Qwen3-ASR to Rockchip Conversion Handoff Specification
+ moving without audio, I can build export_encoder_to_onnx.py around the thinker.audio_tower path identified in Phase 2.# Qwen3-ASR to Rockchip Conversion Handoff Specification
 
 ## Purpose
 
@@ -271,7 +271,7 @@ Recommended environments:
 
 Recommendation:
 
-- Use Docker or isolated virtual environments
+- Prefer Python `venv` or Docker for isolation on Linux x86_64 hosts
 - Keep Qwen, RKNN, and RKLLM toolchains separate
 
 ### Phase 1: Baseline Official Inference
@@ -524,8 +524,9 @@ This is a sketch, not a final locked recipe.
 ### Qwen baseline environment
 
 ```bash
-conda create -n qwen3-asr python=3.12 -y
-conda activate qwen3-asr
+python3 -m venv .venv-qwen3-asr
+source .venv-qwen3-asr/bin/activate
+pip install -U pip
 pip install -U qwen-asr
 pip install -U "huggingface_hub[cli]" onnx onnxruntime onnxsim
 git clone https://github.com/QwenLM/Qwen3-ASR.git
@@ -541,11 +542,11 @@ pip install -U qwen-asr[vllm]
 
 ### RKNN environment
 
-Use the official Rockchip package version matching the chosen platform and host environment. Install it in a separate environment from Qwen.
+Use the official Rockchip package version matching the chosen platform and host environment. Install it in a separate `venv` from Qwen.
 
 ### RKLLM environment
 
-Use the official `rknn-llm` package version matching the chosen platform and host environment. Install it in a separate environment from both Qwen and RKNN.
+Use the official `rknn-llm` package version matching the chosen platform and host environment. Install it in a separate `venv` from both Qwen and RKNN.
 
 ## Suggested Investigation Tasks for the Agent
 

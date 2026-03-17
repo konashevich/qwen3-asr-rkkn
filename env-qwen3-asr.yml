@@ -1,0 +1,27 @@
+name: qwen3-asr
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - qwen-asr
+      - torch
+      - transformers
+      - huggingface_hub[cli]
+      - onnx
+      - onnxruntime
+      - onnxsim
+
+# Optional for faster baseline inference on CUDA hosts:
+#   pip install -U "qwen-asr[vllm]"
+#
+# venv alternative:
+#   python3 -m venv .venv-qwen3-asr
+#   source .venv-qwen3-asr/bin/activate
+#   pip install -U pip
+#   pip install -r requirements-qwen3-asr.txt
+#
+# Recommended follow-up:
+#   conda env create -f env-qwen3-asr.yml

@@ -1,0 +1,10 @@
+qwen-asr
+torch
+transformers
+huggingface_hub[cli]
+onnx
+onnxruntime
+onnxsim
+
+# Optional faster baseline path on CUDA hosts:
+# qwen-asr[vllm]
