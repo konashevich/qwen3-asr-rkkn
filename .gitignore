@@ -9,8 +9,3 @@ dist/rk3588_encoder_runtime/.venv-rk3588-runtime/
 
 # Ignore local validation scratch output; keep exported model artifacts and references tracked.
 outputs/device_run*/
-# Ignore large binaries (exceed GitHub limit)
-*.onnx
-*.rknn
-**/*.onnx
-**/*.rknn
