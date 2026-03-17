@@ -1,5 +1,25 @@
 # RKNN Artifact Git LFS Incident Report
 
+## Resolution Status
+
+Status as of 2026-03-18: resolved on `origin/main`.
+
+Verification performed from this producer machine:
+
+- local artifacts are real binaries, not LFS pointer text
+- `git lfs status` showed no pending objects to push
+- local `main` matched `origin/main`
+- a fresh public clone from `https://github.com/konashevich/qwen3-asr-rkkn.git` downloaded the real payloads through Git LFS
+
+Verified fresh-clone artifact sizes:
+
+- `outputs/encoder_onnx/qwen3_asr_encoder_single_chunk.onnx`: about `712M`
+- `outputs/rknn/qwen3_asr_encoder_single_chunk_rk3588.rknn`: about `361M`
+- `outputs/rknn/qwen3_asr_encoder_single_chunk_rk3576.rknn`: about `369M`
+- `dist/rk3588_encoder_runtime/qwen3_asr_encoder_single_chunk_rk3588.rknn`: about `361M`
+
+This means other machines can now clone the public repository and receive the required model binaries from GitHub/LFS.
+
 ## Purpose
 
 This report is for the machine that originally exported and converted the Qwen3-ASR encoder artifacts.
