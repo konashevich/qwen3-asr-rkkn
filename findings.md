@@ -52,7 +52,9 @@
   - RK3588 simulator output matched ONNX with `max_abs_diff_vs_onnx=0.0003182440996170044` and `mean_abs_diff_vs_onnx=3.526877480908297e-05`.
   - `outputs/rknn/qwen3_asr_encoder_single_chunk_rk3576.rknn` built successfully and ran in the RKNN PC simulator.
   - RK3576 simulator output matched ONNX with `max_abs_diff_vs_onnx=0.00043520331382751465` and `mean_abs_diff_vs_onnx=4.207476376905106e-05`.
-  - Board-side runtime on CM3588 is not yet validated: `validate_converted.py` under `/home/pi/npu_env` failed during `RKNNLite.init_runtime` with `RKNN_ERR_MODEL_INVALID`, and the runtime logged `parseRKNN: invalid RKNN_MAGIC!`.
+  - Board-side runtime on CM3588 is now validated after pulling the real Git LFS payloads into this workspace.
+  - `validate_converted.py` under `/home/pi/npu_env` completed successfully with backend `rknnlite`.
+  - Board-side validation reported `output_shape=[13, 1024]`, `max_abs_diff=0.0018666512332856655`, and `mean_abs_diff=0.00019976511248387396` versus the saved reference output.
   - This is only the reduced speech encoder core, not an end-to-end Qwen3-ASR deployment.
 
 ## Phase 7 Board PoC

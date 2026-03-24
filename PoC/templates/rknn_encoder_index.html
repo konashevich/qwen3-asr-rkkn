@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RKNN Encoder CM3588 PoC</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Native Rockchip PoC</p>
+        <h1>RKNN Encoder on CM3588</h1>
+        <p class="lede">
+          This PoC is NPU-only. It runs the reduced RKNN encoder on the Rockchip NPU and contains no CPU-side Qwen model path.
+        </p>
+      </section>
+
+      <section class="panel panel-grid">
+        <article>
+          <h2>Board</h2>
+          <dl>
+            <div><dt>Model</dt><dd>{{ diagnostics.board_model or 'Unknown' }}</dd></div>
+            <div><dt>Platform</dt><dd>{{ diagnostics.platform.system }} {{ diagnostics.platform.release }} / {{ diagnostics.platform.machine }}</dd></div>
+            <div><dt>Compatible</dt><dd>{{ diagnostics.compatible | join(', ') }}</dd></div>
+          </dl>
+        </article>
+        <article>
+          <h2>Native Model</h2>
+          <dl>
+            <div><dt>RKNN path</dt><dd id="rknn-path">{{ diagnostics.npu.encoder_rknn_path }}</dd></div>
+            <div><dt>RKNN size</dt><dd>{{ diagnostics.npu.encoder_rknn_size_mb }} MiB</dd></div>
+            <div><dt>Runtime Python</dt><dd>{{ diagnostics.npu.rknn_python }}</dd></div>
+            <div><dt>Reference input</dt><dd>{{ diagnostics.npu.reference_input_path }}</dd></div>
+          </dl>
+        </article>
+        <article>
+          <h2>NPU Status</h2>
+          <dl>
+            <div><dt>rknpu module</dt><dd>{{ 'loaded' if diagnostics.npu.rknpu_module_loaded else 'not detected' }}</dd></div>
+            <div><dt>librknnrt.so</dt><dd>{{ 'present' if diagnostics.npu.librknnrt_present else 'missing' }}</dd></div>
+            <div><dt>rknnlite env</dt><dd>{{ 'present' if diagnostics.npu.rknnlite_site_present else 'missing' }}</dd></div>
+            <div><dt>Board validation</dt><dd id="npu-status">{{ diagnostics.npu.board_validation_report.status if diagnostics.npu.board_validation_report else 'not run' }}</dd></div>
+            <div><dt>Max diff</dt><dd id="npu-max-diff">{{ diagnostics.npu.board_validation_report.validation.max_abs_diff if diagnostics.npu.board_validation_report and diagnostics.npu.board_validation_report.validation else 'n/a' }}</dd></div>
+          </dl>
+        </article>
+        <article>
+          <h2>Workspace</h2>
+          <dl>
+            <div><dt>Path</dt><dd>{{ diagnostics.storage.path }}</dd></div>
+            <div><dt>Free</dt><dd>{{ diagnostics.storage.free_gib }} GiB</dd></div>
+            <div><dt>Used</dt><dd>{{ diagnostics.storage.used_gib }} GiB</dd></div>
+            <div><dt>Total</dt><dd>{{ diagnostics.storage.total_gib }} GiB</dd></div>
+          </dl>
+        </article>
+      </section>
+
+      <section class="panel composer">
+        <div class="composer-head">
+          <div>
+            <h2>Run Native Encoder</h2>
+            <p>Run the built-in NPU self-test or upload a precomputed .npy feature tensor and execute the RKNN encoder directly on the Rockchip NPU.</p>
+          </div>
+          <div class="badge-row">
+            <span class="badge">RK3588</span>
+            <span class="badge">RKNNLite</span>
+            <span class="badge badge-warning">No CPU fallback</span>
+          </div>
+        </div>
+
+        <form id="encoder-form" class="form-grid">
+          <label class="field field-wide field-file">
+            <span>Feature tensor (.npy)</span>
+            <input id="input-features" name="input_features" type="file" accept=".npy,application/octet-stream">
+          </label>
+
+          <div class="actions">
+            <button id="npu-self-test-button" type="button">Run NPU Self-Test</button>
+            <button id="encoder-run-button" type="submit">Run Uploaded Tensor</button>
+            <p id="submit-status">No request running.</p>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel results">
+        <div class="results-head">
+          <h2>Result</h2>
+          <p>The result area shows the latest native RKNN execution report.</p>
+        </div>
+        <div id="result-empty" class="empty-state">No native RKNN run yet.</div>
+        <div id="result-card" class="result-card hidden">
+          <div class="result-meta">
+            <span id="result-label" class="badge"></span>
+            <span id="result-elapsed" class="badge"></span>
+            <span id="result-shape" class="badge"></span>
+          </div>
+          <pre id="result-text" class="transcript"></pre>
+          <details>
+            <summary>Raw JSON</summary>
+            <pre id="result-json" class="json"></pre>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      window.__INITIAL_STATUS__ = {{ diagnostics | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='rknn_encoder_app.js') }}"></script>
+  </body>
+</html>

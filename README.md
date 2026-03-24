@@ -9,7 +9,7 @@ The current validated results are:
 - A Rockchip-compatible `.rknn` conversion of a reduced Qwen3-ASR speech encoder slice
 - A full board-side Qwen3-ASR-0.6B transcription path running on the CM3588 through the official `qwen-asr` Python runtime
 
-This means the project now has a usable transcription PoC on the actual RK3588 device, while the native NPU path remains partial: the reduced encoder converts and validates in the PC-side simulator, but the current `.rknn` artifact still does not initialize successfully on this board.
+
 
 ## Environments
 
@@ -78,7 +78,13 @@ That folder contains:
 - the board-side validator script
 - a board-side runtime setup script
 
-At the time of this update, the existing board-side RKNN init attempt on CM3588 fails with `RKNN_ERR_MODEL_INVALID` / `invalid RKNN_MAGIC`, so this path should still be treated as diagnostic rather than operational.
+Board-side validation on CM3588 now succeeds with the real RKNN artifact and reports:
+
+- `output_shape=[13, 1024]`
+- `max_abs_diff=0.0018666512332856655`
+- `mean_abs_diff=0.00019976511248387396`
+
+This path is operational for the reduced encoder model on the Rockchip NPU.
 
 On the board:
 

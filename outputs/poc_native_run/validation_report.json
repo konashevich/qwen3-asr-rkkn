@@ -1,0 +1,20 @@
+{
+  "status": "ok",
+  "backend": "rknnlite",
+  "host_name": "RK3588",
+  "model": "/mnt/merged_ssd/qwen3-asr-rkkn/outputs/rknn/qwen3_asr_encoder_single_chunk_rk3588.rknn",
+  "input_features": "/mnt/merged_ssd/qwen3-asr-rkkn/PoC/uploads/1773791593_input_features.npy",
+  "output_dir": "/mnt/merged_ssd/qwen3-asr-rkkn/outputs/poc_native_run",
+  "core_mask": "auto",
+  "output_count": 1,
+  "output_shape": [
+    13,
+    1024
+  ],
+  "validation": null,
+  "output_summary": {
+    "min": -0.1318359375,
+    "max": 0.1134033203125,
+    "mean": 0.0005826093256473541
+  }
+}
